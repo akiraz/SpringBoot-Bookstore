@@ -36,78 +36,64 @@ public class UserNewsServiceImpl implements UserNewsService {
 			RequestNewsByCategoryAndWebsite requestNewsByCategoryAndWebsite) {
 		ResponseNewsByCategoryAndNewsSite responseNewsByCategoryAndNewsSite = new ResponseNewsByCategoryAndNewsSite();
 		List<News> newsList = Collections.emptyList();
-		try {
 
-			List<UsersNews> usersNewsList = userNewsRepository
-					.findUserNewsByUserId(requestNewsByCategoryAndWebsite.getUserId());
+		List<UsersNews> usersNewsList = userNewsRepository
+				.findUserNewsByUserId(requestNewsByCategoryAndWebsite.getUserId());
 
-			List<Long> markedNewsIdList = usersNewsList.stream().filter(s -> s.isMarked()).map(UsersNews::getNewsID)
-					.collect(Collectors.toList());
+		List<Long> markedNewsIdList = usersNewsList.stream().filter(s -> s.isMarked()).map(UsersNews::getNewsID)
+				.collect(Collectors.toList());
 
-			if (!CollectionUtils.isEmpty(markedNewsIdList)) {
-				newsList = newsRepository.findNewsFromThePastHour(
-						DateUtil.getOneHourAgo(), DateUtil.now(), markedNewsIdList,
-						requestNewsByCategoryAndWebsite.getCategory(), requestNewsByCategoryAndWebsite.getWebsite());
-			}
-
-			log.info(
-					"getNewsByCategoryAndNewsSiteFromThePastHour() Category: {} News site: {} userId: {} marked:{} newsCount:{}  listed!",
-					requestNewsByCategoryAndWebsite.getCategory(), requestNewsByCategoryAndWebsite.getWebsite(),
-					requestNewsByCategoryAndWebsite.getUserId(), requestNewsByCategoryAndWebsite.isMarked(),
-					newsList.size());
-
-			responseNewsByCategoryAndNewsSite.setNews(newsList);
-			responseNewsByCategoryAndNewsSite.setReturnCode(Constants.Return.SUCCESS.getCode());
-			responseNewsByCategoryAndNewsSite.setReturnMessage(Constants.Return.SUCCESS.getMessage());
-		} catch (Exception ex) {
-			responseNewsByCategoryAndNewsSite.setReturnCode(Constants.Return.FAIL.getCode());
-			responseNewsByCategoryAndNewsSite.setReturnMessage(Constants.Return.FAIL.getMessage());
-			log.error("getNewsByCategoryAndNewsSiteFromThePastHour() error!", ex);
+		if (!CollectionUtils.isEmpty(markedNewsIdList)) {
+			newsList = newsRepository.findNewsFromThePastHour(DateUtil.getOneHourAgo(), DateUtil.now(),
+					markedNewsIdList, requestNewsByCategoryAndWebsite.getCategory(),
+					requestNewsByCategoryAndWebsite.getWebsite());
 		}
+
+		log.info(
+				"getNewsByCategoryAndNewsSiteFromThePastHour() Category: {} News site: {} userId: {} marked:{} newsCount:{}  listed!",
+				requestNewsByCategoryAndWebsite.getCategory(), requestNewsByCategoryAndWebsite.getWebsite(),
+				requestNewsByCategoryAndWebsite.getUserId(), requestNewsByCategoryAndWebsite.isMarked(),
+				newsList.size());
+
+		responseNewsByCategoryAndNewsSite.setNews(newsList);
+		responseNewsByCategoryAndNewsSite.setReturnCode(Constants.Return.SUCCESS.getCode());
+		responseNewsByCategoryAndNewsSite.setReturnMessage(Constants.Return.SUCCESS.getMessage());
+
 		return responseNewsByCategoryAndNewsSite;
 	}
 
 	public ResponseMarkNewsAsReadByUser markNewsAsReadByUser(RequestMarkNewsAsReadByUser requestMarkNewsAsReadByUser) {
 		ResponseMarkNewsAsReadByUser responseMarkNewsAsReadByUser = new ResponseMarkNewsAsReadByUser();
 		UsersNews usersNews = null;
-		try {
-			usersNews = userNewsRepository.findById(requestMarkNewsAsReadByUser.getNewsId()).orElse(new UsersNews());
-			if (usersNews.getId() == null) {
-				usersNews.setNewsID(requestMarkNewsAsReadByUser.getNewsId());
-				usersNews.setUserId(requestMarkNewsAsReadByUser.getUserId());
-			}
-			usersNews.setMarked(requestMarkNewsAsReadByUser.isMarked());
-			userNewsRepository.save(usersNews);
 
-			log.info("markNewsAsReadByUser() News Id: {} userId: {} marked :{}  marked!",
-					requestMarkNewsAsReadByUser.getNewsId(), requestMarkNewsAsReadByUser.getUserId(),
-					requestMarkNewsAsReadByUser.isMarked());
-			responseMarkNewsAsReadByUser.setReturnCode(Constants.Return.SUCCESS.getCode());
-			responseMarkNewsAsReadByUser.setReturnMessage(Constants.Return.SUCCESS.getMessage());
-		} catch (Exception ex) {
-			responseMarkNewsAsReadByUser.setReturnCode(Constants.Return.FAIL.getCode());
-			responseMarkNewsAsReadByUser.setReturnMessage(Constants.Return.FAIL.getMessage());
-			log.error("markNewsAsReadByUser() error!", ex);
+		usersNews = userNewsRepository.findById(requestMarkNewsAsReadByUser.getNewsId()).orElse(new UsersNews());
+		if (usersNews.getId() == null) {
+			usersNews.setNewsID(requestMarkNewsAsReadByUser.getNewsId());
+			usersNews.setUserId(requestMarkNewsAsReadByUser.getUserId());
 		}
+		usersNews.setMarked(requestMarkNewsAsReadByUser.isMarked());
+		userNewsRepository.save(usersNews);
+
+		log.info("markNewsAsReadByUser() News Id: {} userId: {} marked :{}  marked!",
+				requestMarkNewsAsReadByUser.getNewsId(), requestMarkNewsAsReadByUser.getUserId(),
+				requestMarkNewsAsReadByUser.isMarked());
+		responseMarkNewsAsReadByUser.setReturnCode(Constants.Return.SUCCESS.getCode());
+		responseMarkNewsAsReadByUser.setReturnMessage(Constants.Return.SUCCESS.getMessage());
+
 		return responseMarkNewsAsReadByUser;
 	}
 
 	public ResponseAllUsersNews getAllUsersNews() {
 		ResponseAllUsersNews responseAllUsersNews = new ResponseAllUsersNews();
 		List<UsersNews> usersNewsList = null;
-		try {
-			usersNewsList = userNewsRepository.findAll();
-			if (!CollectionUtils.isEmpty(usersNewsList)) {
-				responseAllUsersNews.setReturnCode(Constants.Return.SUCCESS.getCode());
-				responseAllUsersNews.setReturnMessage(Constants.Return.SUCCESS.getMessage());
-				log.info("getAllUsersNews()  listed! Count: {}", usersNewsList.size());
-				MapperUtil.mapResponseAllUsersNewsFromModel(usersNewsList, responseAllUsersNews);
-			}
-		} catch (Exception ex) {
-			responseAllUsersNews.setReturnCode(Constants.Return.FAIL.getCode());
-			responseAllUsersNews.setReturnMessage(Constants.Return.FAIL.getMessage());
-			log.error("getAllUsersNews() error!", ex);
+		usersNewsList = userNewsRepository.findAll();
+		if (!CollectionUtils.isEmpty(usersNewsList)) {
+			responseAllUsersNews.setReturnCode(Constants.Return.SUCCESS.getCode());
+			responseAllUsersNews.setReturnMessage(Constants.Return.SUCCESS.getMessage());
+			log.info("getAllUsersNews()  listed! Count: {}", usersNewsList.size());
+			MapperUtil.mapResponseAllUsersNewsFromModel(usersNewsList, responseAllUsersNews);
 		}
+
 		return responseAllUsersNews;
 	}
 

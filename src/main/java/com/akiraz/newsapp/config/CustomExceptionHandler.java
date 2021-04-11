@@ -21,6 +21,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.HandlerMethod;
 
 import com.akiraz.newsapp.response.ErrorResponse;
+import com.akiraz.newsapp.util.Constants;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,8 +33,8 @@ public class CustomExceptionHandler {
 	@ResponseBody
 	@ExceptionHandler(TransactionSystemException.class)
 	public final ResponseEntity<?> methodArgumentNotValidException(Exception ex, WebRequest request, HttpServletRequest httpRequest, HttpServletResponse response, HandlerMethod handlerMethod) {
-		log.error("Generic Exception", ex);
-			
+		log.error("Custom Exception method name :"+handlerMethod.getMethod().getName()+ "() error! Exception: "+ex);
+		
 		Throwable cause = ((TransactionSystemException) ex).getRootCause();
 	
 		String constraintMessage = "";
@@ -51,7 +52,8 @@ public class CustomExceptionHandler {
 			constraintMessage = constraintMessage.substring(0, constraintMessage.length() - 2);
 		}
 
-		return ResponseEntity.badRequest().body(new ErrorResponse(constraintMessage));
+		ErrorResponse errorResponse = ErrorResponse.builder().returnCode(Constants.Return.FAIL.getCode()).returnMessage(Constants.Return.FAIL.getMessage()).details(constraintMessage).build();
+		return ResponseEntity.badRequest().body(errorResponse);
 	}
 
 }

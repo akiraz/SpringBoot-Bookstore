@@ -20,12 +20,9 @@ public class NewsValidatorCheck implements ConstraintValidator<NewsValidator, Lo
 
 	@Override
 	public boolean isValid(Long newsId, ConstraintValidatorContext constraintValidatorContext) {
-		try {
 			News news = newsRepository.findById(newsId).orElseThrow(NewsNotFoundException::new);
 			return null != news;
-		} catch (Exception e) {
-			return false;
-		}
+		
 
 	}
 }

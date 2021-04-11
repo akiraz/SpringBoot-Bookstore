@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 
+import com.akiraz.newsapp.exception.NewsNotFoundException;
 import com.akiraz.newsapp.model.entity.News;
 import com.akiraz.newsapp.repository.NewsRepository;
 import com.akiraz.newsapp.request.RequestAddNews;
@@ -99,7 +100,7 @@ public class NewsServiceTest {
 		Mockito.verify(newsRepository).delete(news);
 	}
 
-	@Test
+	@Test(expected = NewsNotFoundException.class)
 	public void testRemoveNewsNewsNotFoundException() {
 		// Create data
 		RequestRemoveNews requestRemoveNews = buildRequestRemoveNewsNewsNotFoundException();
@@ -109,17 +110,6 @@ public class NewsServiceTest {
 
 		// Call test method
 		ResponseRemoveNews responseRemoveNews = newsService.removeNews(requestRemoveNews);
-
-		// Generate expected datas
-		String expectedReturnCodeSuccess = Constants.Return.NEWS_NOT_FOUND.getCode();
-		String expectedReturnMessageSuccess = Constants.Return.NEWS_NOT_FOUND.getMessage();
-
-		// Check results
-		assertEquals(expectedReturnCodeSuccess, responseRemoveNews.getReturnCode());
-		assertEquals(expectedReturnMessageSuccess, responseRemoveNews.getReturnMessage());
-
-		// verify the mock
-		Mockito.verify(newsRepository).findById(requestRemoveNews.getNewsId());
 	}
 
 	@Test
@@ -146,7 +136,7 @@ public class NewsServiceTest {
 		Mockito.verify(newsRepository).findById(requestUpdateNews.getNews().getId());
 	}
 
-	@Test
+	@Test(expected = NewsNotFoundException.class)
 	public void testUpdateNewsNewsNotFoundException() {
 		// Create data
 		RequestUpdateNews requestUpdateNews = buildRequestUpdateNews();
@@ -157,16 +147,6 @@ public class NewsServiceTest {
 		// Call test method
 		ResponseUpdateNews responseUpdateNews = newsService.updateNews(requestUpdateNews);
 
-		// Generate expected datas
-		String expectedReturnCodeSuccess = Constants.Return.NEWS_NOT_FOUND.getCode();
-		String expectedReturnMessageSuccess = Constants.Return.NEWS_NOT_FOUND.getMessage();
-
-		// Check results
-		assertEquals(expectedReturnCodeSuccess, responseUpdateNews.getReturnCode());
-		assertEquals(expectedReturnMessageSuccess, responseUpdateNews.getReturnMessage());
-
-		// verify the mock
-		Mockito.verify(newsRepository).findById(requestUpdateNews.getNews().getId());
 	}
 
 	@Test
