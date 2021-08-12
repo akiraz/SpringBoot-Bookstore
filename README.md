@@ -1,7 +1,12 @@
 # Info
-- News App
+- BookStore App
 
-Dockerized Spring Boot Crud application + JUnit  + Mockito Integration Test 
+- Dockerized Spring Boot Crud application 
+- JWT Authentication 
+- Swagger 
+- JUnit  
+- Lombok
+- Slf4j
 
 
 # Requirements

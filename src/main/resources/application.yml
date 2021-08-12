@@ -21,4 +21,10 @@ spring:
       force:  true
       force-request: true
       force-response: true
-      
+  security:
+    basic:       
+      enabled: false
+hibernate:
+    validator:
+        apply_to_ddl: false
+        autoregister_listeners: false

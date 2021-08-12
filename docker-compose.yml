@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-  akiraz-newsapp:
-    image: akiraz-newsapp
+  akiraz-bookstore:
+    image: akiraz-bookstore
     build:
       context: .
       dockerfile: Dockerfile
@@ -26,7 +26,7 @@ services:
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'root_password'
     volumes:
-      - db-akiraz-newsapp:/var/lib/mysql
+      - db-akiraz-bookstore:/var/lib/mysql
 
 volumes:
-  db-akiraz-newsapp:
+  db-akiraz-bookstore:
