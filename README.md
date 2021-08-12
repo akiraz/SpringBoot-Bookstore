@@ -1,5 +1,4 @@
-# Info
-- BookStore App
+# BookStore App
 
 - Dockerized Spring Boot Crud application 
 - JWT Authentication 
