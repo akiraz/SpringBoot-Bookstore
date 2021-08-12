@@ -24,3 +24,7 @@
 - Data Source: Mysql, h2database (for test scope)
 - Operations Documentation: Swagger2
 - Docker App (Docker Inc., v0.9.1-beta3)
+
+
+    [UserGuide.pdf](https://github.com/akiraz/SpringBoot-Bookstore/files/6974047/UserGuide.pdf)
+
